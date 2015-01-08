@@ -56,9 +56,10 @@ public class Site extends Activity {
         this.threadStart();
 
         /* a test clock */
-        mXWalkViewClock = (XWalkView) findViewById(R.id.clock);
-        mXWalkViewClock.load("file:///android_asset/clock.html", null);
-        mXWalkViewClock.setBackgroundColor(Color.TRANSPARENT);
+        //mXWalkViewClock = (XWalkView) findViewById(R.id.clock);
+        //mXWalkViewClock.load("file:///android_asset/clock.html", null);
+        //mXWalkViewClock.setBackgroundColor(Color.TRANSPARENT);
+        //mXWalkViewClock.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
     }
 
