@@ -1,9 +1,11 @@
 package tv.supermidia.supermidia;
 
+import org.xwalk.core.JavascriptInterface;
 import org.xwalk.core.XWalkPreferences;
 import org.xwalk.core.XWalkView;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -19,6 +21,8 @@ public class Site extends Activity {
     private TextView mOverlayText;
     private int secondsSinceStart;
     private Thread updateThread;
+    private Object wifiManagerJSInterface;
+    private WifiManager wifiManager;
     //Date startDate;
 
     @Override
@@ -61,6 +65,35 @@ public class Site extends Activity {
         //mXWalkViewClock.setBackgroundColor(Color.TRANSPARENT);
         //mXWalkViewClock.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
+        /* create wifi manager and JS interface */
+        wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+
+        wifiManagerJSInterface = new Object() {
+            @JavascriptInterface
+            public void enable() {
+                if (wifiManager == null) {
+                    return;
+                }
+                wifiManager.setWifiEnabled(true);
+            }
+
+            @JavascriptInterface
+            public void disable() {
+                if (wifiManager == null) {
+                    return;
+                }
+                wifiManager.setWifiEnabled(false);
+            }
+
+            @JavascriptInterface
+            public boolean isEnabled() {
+                if (wifiManager == null) {
+                    return false;
+                }
+                return wifiManager.isWifiEnabled();
+            }
+        };
+        mXWalkView.addJavascriptInterface(wifiManagerJSInterface, "wifi");
     }
 
     @Override
