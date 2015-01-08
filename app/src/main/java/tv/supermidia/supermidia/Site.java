@@ -145,6 +145,4 @@ public class Site extends Activity {
         }
 
     }
-
-
 }
