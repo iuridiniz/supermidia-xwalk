@@ -1,0 +1,189 @@
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+index 1d2cf9c..9076de5 100644
+--- a/.idea/misc.xml
++++ b/.idea/misc.xml
+@@ -6,20 +6,5 @@
+   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+-  <component name="masterDetails">
+-    <states>
+-      <state key="ScopeChooserConfigurable.UI">
+-        <settings>
+-          <splitter-proportions>
+-            <option name="proportions">
+-              <list>
+-                <option value="0.2" />
+-              </list>
+-            </option>
+-          </splitter-proportions>
+-        </settings>
+-      </state>
+-    </states>
+-  </component>
+ </project>
+ 
+diff --git a/app/app.iml b/app/app.iml
+index cd02d68..9724666 100644
+--- a/app/app.iml
++++ b/app/app.iml
+@@ -86,7 +86,6 @@
+     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
+     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
+     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
+-    <orderEntry type="module" module-name="crosswalkwebview-9" exported="" />
+   </component>
+ </module>
+ 
+diff --git a/app/build.gradle b/app/build.gradle
+index 4a95420..7d53d66 100644
+--- a/app/build.gradle
++++ b/app/build.gradle
+@@ -22,5 +22,4 @@ android {
+ dependencies {
+     compile fileTree(include: ['*.jar'], dir: 'libs')
+     compile 'com.android.support:appcompat-v7:21.0.3'
+-    compile project(':crosswalkwebview-9')
+ }
+diff --git a/app/src/main/assets/index.html b/app/src/main/assets/index.html
+index 2feac3a..7e40866 100644
+--- a/app/src/main/assets/index.html
++++ b/app/src/main/assets/index.html
+@@ -66,7 +66,6 @@
+     <!-- <script type="text/javascript" src="cordova.js"></script> -->
+     <script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
+     <script type="text/javascript">
+-        
+         var myhost = "supermidia.tv";
+         var offline_page = "offline.html";
+         var content_hold = $("#content");
+diff --git a/app/src/main/java/tv/supermidia/supermidia/Site.java b/app/src/main/java/tv/supermidia/supermidia/Site.java
+index 3fbb8a6..6e753b5 100644
+--- a/app/src/main/java/tv/supermidia/supermidia/Site.java
++++ b/app/src/main/java/tv/supermidia/supermidia/Site.java
+@@ -1,7 +1,7 @@
+ package tv.supermidia.supermidia;
+ 
+-import org.xwalk.core.XWalkPreferences;
+-import org.xwalk.core.XWalkView;
++//import org.xwalk.core.XWalkPreferences;
++//import org.xwalk.core.XWalkView;
+ 
+ import android.app.Activity;
+ import android.graphics.Color;
+@@ -10,12 +10,14 @@ import android.os.Bundle;
+ import android.text.format.Formatter;
+ import android.util.Log;
+ import android.view.View;
++import android.webkit.WebSettings;
++import android.webkit.WebView;
+ import android.widget.TextView;
+ 
+ public class Site extends Activity {
+     public static final String TAG = "Site";
+-    private XWalkView mXWalkView;
+-    private XWalkView mXWalkViewClock;
++    //private XWalkView mXWalkView;
++    //private XWalkView mXWalkViewClock;
+     private TextView mOverlayText;
+     private int secondsSinceStart;
+     private Thread updateThread;
+@@ -24,15 +26,15 @@ public class Site extends Activity {
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         // Alternate texture
+-        XWalkPreferences.setValue(XWalkPreferences.ANIMATABLE_XWALK_VIEW, true);
++        //XWalkPreferences.setValue(XWalkPreferences.ANIMATABLE_XWALK_VIEW, true);
+         // turn on debugging
+-        XWalkPreferences.setValue(XWalkPreferences.REMOTE_DEBUGGING, true);
++        //XWalkPreferences.setValue(XWalkPreferences.REMOTE_DEBUGGING, true);
+ 
+         super.onCreate(savedInstanceState);
+ 
+         setContentView(R.layout.webviewer);
+ 
+-        mXWalkView = (XWalkView) findViewById(R.id.main_site);
++        //mXWalkView = (XWalkView) findViewById(R.id.main_site);
+         mOverlayText = (TextView) findViewById(R.id.overlay_text);
+ 
+         //make it fullscreen
+@@ -47,10 +49,10 @@ public class Site extends Activity {
+ 
+         /* Open my site */
+         //mXWalkView.load("http://supermidia.tv/", null);
+-        mXWalkView.load("file:///android_asset/index.html", null);
++        //mXWalkView.load("file:///android_asset/index.html", null);
+ 
+         /* show the version of XWalk */
+-        Log.d(TAG, "Running XWalk: " + mXWalkView.getXWalkVersion());
++        //Log.d(TAG, "Running XWalk: " + mXWalkView.getXWalkVersion());
+ 
+         /* Update text Thread */
+         this.threadStart();
+@@ -60,26 +62,32 @@ public class Site extends Activity {
+         //mXWalkViewClock.load("file:///android_asset/clock.html", null);
+         //mXWalkViewClock.setBackgroundColor(Color.TRANSPARENT);
+         //mXWalkViewClock.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
++        WebView myWebView = (WebView) findViewById(R.id.main_site);
+ 
++        WebSettings webSettings = myWebView.getSettings();
++        webSettings.setJavaScriptEnabled(true);
++        myWebView.loadUrl("http://www.supermidia.tv");
++        //myWebView.loadUrl("file:///android_asset/index.html");
++        //myWebView.loadUrl("file:///android_asset/offline.html");
+     }
+ 
+     @Override
+     protected void onPause() {
+         super.onPause();
+-        if (mXWalkView != null) {
+-            mXWalkView.pauseTimers();
+-            mXWalkView.onHide();
+-        }
++        //if (mXWalkView != null) {
++        //    mXWalkView.pauseTimers();
++        //    mXWalkView.onHide();
++        //}
+         this.threadStop();
+     }
+ 
+     @Override
+     protected void onResume() {
+         super.onResume();
+-        if (mXWalkView != null) {
+-            mXWalkView.resumeTimers();
+-            mXWalkView.onShow();
+-        }
++        //if (mXWalkView != null) {
++        //    mXWalkView.resumeTimers();
++        //    mXWalkView.onShow();
++        //}
+         this.threadStart();
+ 
+     }
+@@ -87,9 +95,9 @@ public class Site extends Activity {
+     @Override
+     protected void onDestroy() {
+         super.onDestroy();
+-        if (mXWalkView != null) {
+-            mXWalkView.onDestroy();
+-        }
++        //if (mXWalkView != null) {
++        //    mXWalkView.onDestroy();
++        //}
+         this.threadStop();
+     }
+ 
+diff --git a/app/src/main/res/layout/webviewer.xml b/app/src/main/res/layout/webviewer.xml
+index cd55c9e..8455707 100644
+--- a/app/src/main/res/layout/webviewer.xml
++++ b/app/src/main/res/layout/webviewer.xml
+@@ -2,7 +2,7 @@
+         android:layout_width="fill_parent"
+         android:layout_height="fill_parent">
+ 
+-    <org.xwalk.core.XWalkView android:id="@+id/main_site"
++    <WebView android:id="@+id/main_site"
+         android:layout_width="fill_parent"
+         android:layout_height="fill_parent"
+         android:layout_gravity="right|center_vertical"/>
